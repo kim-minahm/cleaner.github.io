@@ -1,0 +1,128 @@
+<html>
+<head>
+	<link rel='stylesheet' type='text/css' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css'>
+	<script
+  src="https://code.jquery.com/jquery-3.1.1.min.js"
+  integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
+  crossorigin="anonymous"></script>
+</head>
+<body>
+	<div class='container'>
+		<h1>Ingredients</h1>
+		<p>
+			Copy paste the ingredient list into the text area
+		</p>
+		<div class='row'>
+			<textarea id='instruction' class='col-xs-12'></textarea>
+			<button onClick='ingredients()'>Convert</button>
+		</div>
+		<div class='row'>
+			<div class='col-xs-12'>
+				<p id='convertedInstructions' style='white-space: pre'>
+				</p>
+			</div>
+		</div>
+	</div>
+	<div class='container'>
+		<h1>Directions</h1>
+		<p>
+			Copy paste the instructions into the text area
+		</p>
+		<div class='row'>
+			<textarea id='direction' class='col-xs-12'></textarea>
+			<button onClick='process()'>Convert</button>
+		</div>
+		<div class='row'>
+			<div class='col-xs-12'>
+				<p id='convertedDirection' style='white-space: pre'>
+				</p>
+			</div>
+		</div>
+	</div>
+	<div class='container'>
+		<div class='col-xs-12'>
+			<p id='compiled' style='white-space: pre'></p>
+		</div>
+	</div>
+
+	<script type='text/javascript'>
+	function ingredients(){
+		var content = $('#instruction').val();
+		var lines = content.split('\n');
+		lines = clean(lines);
+		var output = '&lt;strong&gt;Ingredients&lt;/strong&gt;\n'
+		for(var i = 0; i < lines.length; i++){
+			lines[i] = lines[i].trim();
+			if(lines[i].length == 0){
+				lines.splice(i,1);
+				i--;
+				continue;
+			}
+			var letter = lines[i][0];
+			output += '\n&lt;li&gt;' +lines[i] + '&lt;/li&gt;';
+		}
+		$('#convertedInstructions').html(output);
+		// $('#compiled').html(output);
+	}
+	
+	function process(){
+		var content = $('#direction').val();
+		var lines = content.split('\n');
+		lines = clean(lines);
+		var output = '&lt;strong&gt;Directions&lt;/strong&gt;'
+		for(var i = 0; i < lines.length; i++){
+			lines[i] = lines[i].trim();
+			if(lines[i].length == 0){
+				lines.splice(i,1);
+				i--;
+				continue;
+			}
+			var letter = lines[i][0];
+			var count = i+1;
+			var point = '.  ';
+			if(count > 9){
+				point = '. '
+			}
+			output += '\n\n' + count + point +lines[i];
+		}
+		output+="\n\nCOOKDAT";
+		$('#convertedDirection').html(output);
+		// $('#compiled').append(output);
+	}
+
+	function clean(array){
+		var decorated = checkDecorator(array);
+		for(var i = 0; i < array.length; i++){
+			array[i] = array[i].trim();
+			var letter = array[i]
+			if(decorated){
+				console.log('match: '+(i+1)+'-'+array[i][0])
+				while(array[i][0] != ' '){
+					array[i] = array[i].substring(1);
+				}
+				array[i] = array[i].trim();
+			}else if((letter < 'A' || letter > 'Z') && (letter < 'a' || letter > 'z') && (letter < '1' || letter > '0')){
+				while((letter < 'A' || letter > 'Z') && (letter < 'a' || letter > 'z') && (letter < 0 || letter > 9)){
+					console.log(letter)
+					array[i] = array[i].substring(1);
+					letter = array[i];
+				}
+			}
+		}
+		return array;
+	}
+
+	function checkDecorator(array){
+		var decorated = true;
+		//Checks if the array are decorated by index
+		for(var i = 0; i < array.length; i++){
+			//Indexes do not match
+			if(array[i][0] != (i+1).toString()){
+				return false
+			}
+		}
+		return true;
+	}
+	</script>
+</body>
+</html>
