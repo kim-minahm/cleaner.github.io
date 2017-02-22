@@ -94,16 +94,17 @@
 		var decorated = checkDecorator(array);
 		for(var i = 0; i < array.length; i++){
 			array[i] = array[i].trim();
-			var letter = array[i]
+			var letter = array[i][0];
 			if(decorated){
 				console.log('match: '+(i+1)+'-'+array[i][0])
 				while(array[i][0] != ' '){
 					array[i] = array[i].substring(1);
 				}
 				array[i] = array[i].trim();
-			}else if((letter < 'A' || letter > 'Z') && (letter < 'a' || letter > 'z') && (letter < '1' || letter > '0')){
-				while((letter < 'A' || letter > 'Z') && (letter < 'a' || letter > 'z') && (letter < 0 || letter > 9)){
-					console.log(letter)
+			}else if((letter < 'A' || letter > 'Z') && (letter < 'a' || letter > 'z') && (letter < '0' || letter > '0')){
+				console.log('first' + letter)
+				while((letter < 'A' || letter > 'Z') && (letter < 'a' || letter > 'z') && (letter < '0' || letter > '9')){
+					console.log('sec' + letter)
 					array[i] = array[i].substring(1);
 					letter = array[i];
 				}
