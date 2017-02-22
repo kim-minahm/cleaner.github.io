@@ -46,9 +46,29 @@
 	</div>
 
 	<script type='text/javascript'>
+	function ingredients(){
+		var content = $('#instruction').val();
+		var lines = content.split('\n');
+		lines = clean(lines);
+		var output = '&lt;strong&gt;Ingredients&lt;/strong&gt;\n'
+		for(var i = 0; i < lines.length; i++){
+			lines[i] = lines[i].trim();
+			if(lines[i].length == 0){
+				lines.splice(i,1);
+				i--;
+				continue;
+			}
+			var letter = lines[i][0];
+			output += '\n&lt;li&gt;' +lines[i] + '&lt;/li&gt;';
+		}
+		$('#convertedInstructions').html(output);
+		// $('#compiled').html(output);
+	}
+	
 	function process(){
 		var content = $('#direction').val();
 		var lines = content.split('\n');
+		lines = clean(lines);
 		var output = '&lt;strong&gt;Directions&lt;/strong&gt;'
 		for(var i = 0; i < lines.length; i++){
 			lines[i] = lines[i].trim();
@@ -58,10 +78,6 @@
 				continue;
 			}
 			var letter = lines[i][0];
-			//if first letter is not a 
-			if((letter < 'A' || letter > 'Z') && (letter < 'a' || letter > 'z')){
-				lines[i] = lines[i].substring(1);
-			}
 			var count = i+1;
 			var point = '.  ';
 			if(count > 9){
@@ -74,26 +90,38 @@
 		// $('#compiled').append(output);
 	}
 
-	function ingredients(){
-		var content = $('#instruction').val();
-		var lines = content.split('\n');
-		var output = '&lt;strong&gt;Ingredients&lt;/strong&gt;\n'
-		for(var i = 0; i < lines.length; i++){
-			lines[i] = lines[i].trim();
-			if(lines[i].length == 0){
-				lines.splice(i,1);
-				i--;
-				continue;
+	function clean(array){
+		var decorated = checkDecorator(array);
+		for(var i = 0; i < array.length; i++){
+			array[i] = array[i].trim();
+			var letter = array[i]
+			if(decorated){
+				console.log('match: '+(i+1)+'-'+array[i][0])
+				while(array[i][0] != ' '){
+					array[i] = array[i].substring(1);
+				}
+				array[i] = array[i].trim();
+			}else if((letter < 'A' || letter > 'Z') && (letter < 'a' || letter > 'z') && (letter < '1' || letter > '0')){
+				while((letter < 'A' || letter > 'Z') && (letter < 'a' || letter > 'z') && (letter < 0 || letter > 9)){
+					console.log(letter)
+					array[i] = array[i].substring(1);
+					letter = array[i];
+				}
 			}
-			var letter = lines[i][0];
-			//if first letter is not a 
-			if((letter < 'A' || letter > 'Z') && (letter < 'a' || letter > 'z') && (letter < '1' || letter < '0')){
-				lines[i] = lines[i].substring(1);
-			}
-			output += '\n&lt;li&gt;' +lines[i] + '&lt;/li&gt;';
 		}
-		$('#convertedInstructions').html(output);
-		// $('#compiled').html(output);
+		return array;
+	}
+
+	function checkDecorator(array){
+		var decorated = true;
+		//Checks if the array are decorated by index
+		for(var i = 0; i < array.length; i++){
+			//Indexes do not match
+			if(array[i][0] != (i+1).toString()){
+				return false
+			}
+		}
+		return true;
 	}
 	</script>
 </body>
